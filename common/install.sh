@@ -48,6 +48,8 @@ mono() {
 	sed -i 's/DroidSans//' $SYSXML
 }
 
+full() { headline; body; condensed; mono; }
+
 rounded() {
 	if [ $HF -eq 2 ]; then cp $FONTDIR/rd/hf/*ttf $SYSFONT; fi
 	if [ $BF -eq 2 ]; then cp $FONTDIR/rd/bf/*ttf $SYSFONT; fi
@@ -68,7 +70,13 @@ bold() {
  	cp $SYSFONT/Condensed-Italic.ttf $SYSFONT/Condensed-LightItalic.ttf
 }
 
-full() { headline; body; condensed; mono; }
+legible() {
+	SRC=$FONTDIR/bf/hl
+	if [ $BF -eq 2 ]; then SRC=$FONTDIR/rd/bf/hl
+	elif [ $BF -eq 3 ]; then SRC=$FONTDIR/tx/hl; fi
+	cp $SRC/*ttf $SYSFONT
+}
+
 
 cleanup() {
 	rm -rf $FONTDIR
@@ -82,8 +90,10 @@ pixel() {
 		DEST=$SYSFONT
 	fi
 	if [ ! -z $DEST ]; then
-		cp $SYSFONT/Regular.ttf $DEST/GoogleSans-Regular.ttf
-		cp $SYSFONT/Italic.ttf $DEST/GoogleSans-Italic.ttf
+		SRC=$FONTDIR/bf
+		if [ $BF -eq 2 ]; then SRC=$FONTDIR/rd/bf; fi
+		cp $SRC/Regular.ttf $DEST/GoogleSans-Regular.ttf
+		cp $FONTDIR/bf/Italic.ttf $DEST/GoogleSans-Italic.ttf
 		cp $SYSFONT/Medium.ttf $DEST/GoogleSans-Medium.ttf
 		cp $SYSFONT/MediumItalic.ttf $DEST/GoogleSans-MediumItalic.ttf
 		cp $SYSFONT/Bold.ttf $DEST/GoogleSans-Bold.ttf
@@ -240,6 +250,17 @@ if $OPTION; then
 		ui_print "   "
 		ui_print "  Selected: $BF"
 
+		ui_print "   "
+		ui_print "- High Legibility?"
+		ui_print "  Vol+ = Yes; Vol- = No"
+		ui_print "   "
+		if $VKSEL; then
+			LEGIBLE=true
+			ui_print "  Selected: Yes"
+		else
+			ui_print "  Selected: No"	
+		fi
+
 		if [ $HF -eq $BF ] && ! $LEGIBLE; then
 			ui_print "   "
 			ui_print "- Use BOLD font?"
@@ -252,7 +273,6 @@ if $OPTION; then
 				ui_print "  Selected: No"	
 			fi
 		fi
-
 	fi
 
 fi
