@@ -91,7 +91,7 @@ pixel() {
 	fi
 	if [ ! -z $DEST ]; then
 		SRC=$FONTDIR/bf
-		if [ $BF -eq 2 ]; then SRC=$FONTDIR/rd/bf; fi
+		if [ $HF -eq 2 ]; then SRC=$FONTDIR/rd/bf; fi
 		cp $SRC/Regular.ttf $DEST/GoogleSans-Regular.ttf
 		cp $FONTDIR/bf/Italic.ttf $DEST/GoogleSans-Italic.ttf
 		cp $SYSFONT/Medium.ttf $DEST/GoogleSans-Medium.ttf
