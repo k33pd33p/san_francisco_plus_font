@@ -28,14 +28,12 @@ patch() {
 headline() {
 	cp $FONTDIR/hf/*ttf $SYSFONT
 	sed -i '/\"sans-serif\">/,/family>/{s/Roboto-M/M/;s/Roboto-B/B/}' $SYSXML
-	sed -i 's/NotoSerif-//' $SYSXML
+	nsss
 }
 
 body() {
 	cp $FONTDIR/bf/*ttf $SYSFONT 
 	sed -i '/\"sans-serif\">/,/family>/{s/Roboto-T/T/;s/Roboto-L/L/;s/Roboto-R/R/;s/Roboto-I/I/}' $SYSXML
-	sed -i 's/SourceSansPro-SemiBold/Medium/' $SYSXML
-	sed -i 's/SourceSansPro-//' $SYSXML
 }
 
 condensed() {
@@ -49,6 +47,38 @@ mono() {
 }
 
 full() { headline; body; condensed; mono; }
+
+nsss() {
+	if [ $API -gt 28 ]; then
+		sed -i 's/NotoSerif-/NS-/' $SYSXML
+		SRC=$FONTDIR/hf
+		cp $SRC/BoldItalic.ttf $SYSFONT/NS-BoldItalic.ttf
+		if [ $HF -eq 2 ]; then SRC=$FONTDIR/rd/hf; fi
+		cp $SRC/Bold.ttf $SYSFONT/NS-Bold.ttf
+		SRC=$FONTDIR/bf
+		cp $SRC/Italic.ttf $SYSFONT/NS-Italic.ttf
+		if [ $HF -eq 2 ]; then SRC=$FONTDIR/rd/bf; fi
+		cp $SRC/Regular.ttf $SYSFONT/NS-Regular.ttf
+	
+		if [ $PART -eq 1 ]; then
+			sed -i 's/SourceSansPro-SemiBold/SSP-Medium/' $SYSXML
+			sed -i 's/SourceSansPro-/SSP-/' $SYSXML
+			SRC=$FONTDIR/hf
+			cp $SRC/BoldItalic.ttf $SYSFONT/SSP-BoldItalic.ttf
+			cp $SRC/MediumItalic.ttf $SYSFONT/SSP-MediumItalic.ttf
+			if [ $BF -eq 2 ]; then SRC=$FONTDIR/rd/hf; fi
+			cp $SRC/Bold.ttf $SYSFONT/SSP-Bold.ttf
+			cp $SRC/Medium.ttf $SYSFONT/SSP-Medium.ttf
+			SRC=$FONTDIR/bf
+			cp $SRC/Italic.ttf $SYSFONT/SSP-Italic.ttf
+			if [ $BF -eq 2 ]; then SRC=$FONTDIR/rd/bf
+			elif [ $BF -eq 3 ]; then SRC=$FONTDIR/tx/bf; fi
+			cp $SRC/Italic.ttf $SYSFONT/SSP-Italic.ttf
+			if $LEGIBLE; then SRC=$SRC/hl; fi
+			cp $SRC/Regular.ttf $SYSFONT/SSP-Regular.ttf
+		fi
+	fi
+}
 
 rounded() {
 	if [ $HF -eq 2 ]; then cp $FONTDIR/rd/hf/*ttf $SYSFONT; fi
