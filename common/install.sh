@@ -75,7 +75,7 @@ nsss() {
 				SRC=$FONTDIR/bf
 				cp $SRC/Italic.ttf $SYSFONT/SSP-Italic.ttf
 				if [ $BF -eq 2 ]; then SRC=$FONTDIR/rd/bf
-				elif [ $BF -eq 3 ]; then SRC=$FONTDIR/tx/bf; fi
+				elif [ $BF -eq 3 ]; then SRC=$FONTDIR/tx; fi
 				cp $SRC/Italic.ttf $SYSFONT/SSP-Italic.ttf
 				if $LEGIBLE; then SRC=$SRC/hl; fi
 				cp $SRC/Regular.ttf $SYSFONT/SSP-Regular.ttf
