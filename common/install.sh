@@ -328,6 +328,7 @@ if $BOLD; then
 	bold; sed -ie 3's/$/-bld&/' $MODPROP
 fi
 
+PXL=false; OOS=false; MIUI=false
 rom
 
 ### CLEAN UP ###
