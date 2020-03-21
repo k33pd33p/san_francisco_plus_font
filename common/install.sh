@@ -324,6 +324,10 @@ case $BF in
 	3 ) text; sed -ie 3's/$/-bftxt&/' $MODPROP;;
 esac
 
+if $LEGIBLE; then
+	legible; sed -ie 3's/$/-lgbl&/' $MODPROP
+fi
+
 if $BOLD; then
 	bold; sed -ie 3's/$/-bld&/' $MODPROP
 fi
