@@ -86,8 +86,15 @@ rounded() {
 text() { cp $FONTDIR/tx/*ttf $SYSFONT; }
 
 bold() {
-	sed -i '/\"sans-serif\">/,/family>/{/400/d;/>Light\./{N;h;d};/MediumItalic/G;/>Black\./{N;h;d};/BoldItalic/G}' $SYSXML
-	sed -i '/\"sans-serif-condensed\">/,/family>/{/400/d;/-Light\./{N;h;d};/MediumItalic/G}' $SYSXML
+	SRC=$FONTDIR/bf/bd
+	if [ $BF -eq 2 ]; then SRC=$FONTDIR/rd/bf/bd
+	elif [ $BF -eq 3 ]; then SRC=$FONTDIR/tx/bd; fi
+	if [ $BOLD -eq 1 ]; then cp $SRC/25/*ttf $SYSFONT
+	elif [ $BOLD -eq 2 ]; then cp $SRC/50/*ttf $SYSFONT
+	else
+		sed -i '/\"sans-serif\">/,/family>/{/400/d;/>Light\./{N;h;d};/MediumItalic/G;/>Black\./{N;h;d};/BoldItalic/G}' $SYSXML
+		sed -i '/\"sans-serif-condensed\">/,/family>/{/400/d;/-Light\./{N;h;d};/MediumItalic/G}' $SYSXML
+	fi
 }
 
 legible() {
@@ -118,7 +125,7 @@ pixel() {
 		cp $SYSFONT/MediumItalic.ttf $DEST/GoogleSans-MediumItalic.ttf
 		cp $SYSFONT/Bold.ttf $DEST/GoogleSans-Bold.ttf
 		cp $SYSFONT/BoldItalic.ttf $DEST/GoogleSans-BoldItalic.ttf
-		if $BOLD; then
+		if [ $BOLD -eq 3 ]; then
 			cp $DEST/GoogleSans-Medium.ttf $DEST/GoogleSans-Regular.ttf
 			cp $DEST/GoogleSans-MediumItalic.ttf $DEST/GoogleSans-Italic.ttf
 		fi
@@ -184,8 +191,8 @@ OPTION=false
 PART=1
 HF=1
 BF=1
+BOLD=0
 LEGIBLE=false
-BOLD=false
 
 ui_print "   "
 ui_print "- Enable OPTIONS?"
@@ -270,23 +277,52 @@ if $OPTION; then
 		ui_print "  Selected: $BF"
 
 		ui_print "   "
-		ui_print "- High Legibility?"
+		ui_print "- Use BOLD font?"
 		ui_print "  Vol+ = Yes; Vol- = No"
 		ui_print "   "
 		if $VKSEL; then
-			LEGIBLE=true
+			BOLD=1
 			ui_print "  Selected: Yes"
 		else
 			ui_print "  Selected: No"	
 		fi
 
-		if [ $HF -eq $BF ] && ! $LEGIBLE; then
+		if [ $BOLD -eq 1 ]; then
 			ui_print "   "
-			ui_print "- Use BOLD font?"
+			ui_print "- How much BOLD?"
+			ui_print "  Vol+ = Select; Vol- = OK"
+			ui_print "   "
+			ui_print "  1. Light"
+			ui_print "  2. Medium"
+			if [ $HF -eq $BF ]; then
+				ui_print "  3. Strong"
+			fi
+			ui_print "   "
+			ui_print "  Select:"
+			while true; do
+				ui_print "  $BOLD"
+				if $VKSEL; then
+					BOLD=$((BOLD + 1))
+				else 
+					break
+				fi
+				if [ $BOLD -gt 2 ] && [ $HF -ne $BF ]; then
+					BOLD=1
+				elif [ $BOLD -gt 3 ] ; then
+					BOLD=1
+				fi
+			done
+			ui_print "   "
+			ui_print "  Selected: $BOLD"
+		fi
+
+		if [ $BOLD -eq 0 ]; then
+			ui_print "   "
+			ui_print "- High Legibility?"
 			ui_print "  Vol+ = Yes; Vol- = No"
 			ui_print "   "
 			if $VKSEL; then
-				BOLD=true	
+				LEGIBLE=true
 				ui_print "  Selected: Yes"
 			else
 				ui_print "  Selected: No"	
@@ -319,12 +355,12 @@ case $BF in
 	3 ) text; sed -ie 3's/$/-bftxt&/' $MODPROP;;
 esac
 
-if $LEGIBLE; then
-	legible; sed -ie 3's/$/-lgbl&/' $MODPROP
+if [ $BOLD -ne 0 ]; then
+	bold; sed -ie 3's/$/-bld&/' $MODPROP
 fi
 
-if $BOLD; then
-	bold; sed -ie 3's/$/-bld&/' $MODPROP
+if $LEGIBLE; then
+	legible; sed -ie 3's/$/-lgbl&/' $MODPROP
 fi
 
 PXL=false; OOS=false; MIUI=false
