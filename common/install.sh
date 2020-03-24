@@ -104,7 +104,6 @@ legible() {
 	cp $SRC/*ttf $SYSFONT
 }
 
-
 cleanup() {
 	rm -rf $FONTDIR
 	rmdir -p $SYSETC $PRDFONT
@@ -135,7 +134,7 @@ pixel() {
 }
 
 oxygen() {
-	if [ -f /system/fonts/SlateForOnePlus-Regular.ttf ]; then
+	if [ -f $ORIGDIR/system/fonts/SlateForOnePlus-Regular.ttf ]; then
 		cp $SYSFONT/Black.ttf $SYSFONT/SlateForOnePlus-Black.ttf
 		cp $SYSFONT/Bold.ttf $SYSFONT/SlateForOnePlus-Bold.ttf
 		cp $SYSFONT/Medium.ttf $SYSFONT/SlateForOnePlus-Medium.ttf
