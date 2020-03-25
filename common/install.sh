@@ -190,7 +190,7 @@ googlesans() {
 	if i=$(grep -e 'hf-' -e 'hf$' $MODULEROOT/googlesansplus/module.prop); then
 		SYSXML=$MODULEROOT/googlesansplus/system/etc/fonts.xml
 		GS=true
-	elif i=$(grep -e 'hf-' -e 'hf$' $NVBASE/googlesansplus/module.prop); then
+	elif i=$(grep -e 'hf-' -e 'hf$' $NVBASE/modules/googlesansplus/module.prop); then
 		SYSXML=$NVBASE/modules/googlesansplus/system/etc/fonts.xml
 		GS=true
 	fi
