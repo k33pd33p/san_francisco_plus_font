@@ -187,10 +187,10 @@ rom() {
 }
 
 googlesans() {
-	if i=$(grep '\-hf-' $MODULEROOT/googlesansplus/module.prop); then
+	if i=$(grep 'hf-\|hf$' $MODULEROOT/googlesansplus/module.prop); then
 		SYSXML=$MODULEROOT/googlesansplus/system/etc/fonts.xml
 		GS=true
-	elif i=$(grep '\-hf-' $NVBASE/googlesansplus/module.prop); then
+	elif i=$(grep 'hf-\|hf$' $NVBASE/googlesansplus/module.prop); then
 		SYSXML=$NVBASE/modules/googlesansplus/system/etc/fonts.xml
 		GS=true
 	fi
