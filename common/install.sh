@@ -49,7 +49,7 @@ mono() {
 full() { headline; body; condensed; mono; }
 
 nsss() {
-	if [ $API -ge 29 ] && i=$(grep 'NotoSerif\|NS-' $SYSXML) && i=$(grep SourceSansPro $SYSXML); then
+	if [ $API -ge 29 ] && i=$(grep -e 'NotoSerif' -e 'NS-' $SYSXML) && i=$(grep SourceSansPro $SYSXML); then
 		if [ $PART -eq 1 ]; then
 			sed -i 's/NotoSerif-/NS-/' $SYSXML
 			SRC=$FONTDIR/hf
@@ -187,10 +187,10 @@ rom() {
 }
 
 googlesans() {
-	if i=$(grep 'hf-\|hf$' $MODULEROOT/googlesansplus/module.prop); then
+	if i=$(grep -e 'hf-' -e 'hf$' $MODULEROOT/googlesansplus/module.prop); then
 		SYSXML=$MODULEROOT/googlesansplus/system/etc/fonts.xml
 		GS=true
-	elif i=$(grep 'hf-\|hf$' $NVBASE/googlesansplus/module.prop); then
+	elif i=$(grep -e 'hf-' -e 'hf$' $NVBASE/googlesansplus/module.prop); then
 		SYSXML=$NVBASE/modules/googlesansplus/system/etc/fonts.xml
 		GS=true
 	fi
