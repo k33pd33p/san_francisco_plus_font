@@ -186,6 +186,16 @@ rom() {
 	fi
 }
 
+googlesans() {
+	if i=$(grep '\-hf\-' $MODULEROOT/googlesansplus/module.prop); then
+		SYSXML=$MODULEROOT/googlesansplus/system/etc/fonts.xml
+		GS=true
+	elif i=$(grep '\-hf\-' $NVBASE/googlesansplus/module.prop); then
+		SYSXML=$NVBASE/modules/googlesansplus/system/etc/fonts.xml
+		GS=true
+	fi
+}
+
 ### SELECTIONS ###
 
 OPTION=false
@@ -194,6 +204,9 @@ HF=1
 BF=1
 BOLD=0
 LEGIBLE=false
+
+GS=false
+googlesans
 
 ui_print "   "
 ui_print "- Enable OPTIONS?"
@@ -208,137 +221,141 @@ fi
 
 if $OPTION; then
 
-#	ui_print "   "
-#	ui_print "- WHERE to install?"
-#	ui_print "  Vol+ = Select; Vol- = Ok"
-#	ui_print "   "
-#	ui_print "  1. Full"
-#	ui_print "  2. Body"
-#	ui_print "   "
-#	ui_print "  Select:"
-#	while true; do
-#	ui_print "  $PART"
-#	if $VKSEL; then
-#	PART=$((PART + 1))
-#	else 
-#	break
-#	fi
-#	if [ $PART -gt 2 ]; then
-#	PART=1
-#	fi
-#	done
-#	ui_print "   "
-#	ui_print "  Selected: $PART"
-
-	ui_print "   "
-	ui_print "- Which HEADLINE font style?"
-	ui_print "  Vol+ = Select; Vol- = OK"
-	ui_print "   "
-	ui_print "  1. Default"
-	ui_print "  2. Rounded"
-	ui_print "   "
-	ui_print "  Select:"
-	while true; do
-		ui_print "  $HF"
-		if $VKSEL; then
-			HF=$((HF + 1))
-		else 
-			break
-		fi
-		if [ $HF -gt 2 ]; then
-			HF=1
-		fi
-	done
-	ui_print "   "
-	ui_print "  Selected: $HF"
+	if $GS; then
+		ui_print "   "
+		ui_print "- WHERE to install?"
+		ui_print "  Vol+ = Select; Vol- = Ok"
+		ui_print "   "
+		ui_print "  1. Full"
+		ui_print "  2. Body"
+		ui_print "   "
+		ui_print "  Select:"
+		while true; do
+			ui_print "  $PART"
+			if $VKSEL; then
+				PART=$((PART + 1))
+			else 
+				break
+			fi
+			if [ $PART -gt 2 ]; then
+				PART=1
+			fi
+		done
+		ui_print "   "
+		ui_print "  Selected: $PART"
+	fi
 
 	if [ $PART -eq 1 ]; then
-
 		ui_print "   "
-		ui_print "- Which BODY font style?"
+		ui_print "- Which HEADLINE font style?"
 		ui_print "  Vol+ = Select; Vol- = OK"
 		ui_print "   "
 		ui_print "  1. Default"
 		ui_print "  2. Rounded"
-		ui_print "  3. Text"
 		ui_print "   "
 		ui_print "  Select:"
 		while true; do
-			ui_print "  $BF"
+			ui_print "  $HF"
 			if $VKSEL; then
-				BF=$((BF + 1))
+				HF=$((HF + 1))
 			else 
 				break
 			fi
-			if [ $BF -gt 3 ]; then
-				BF=1
+			if [ $HF -gt 2 ]; then
+				HF=1
 			fi
 		done
 		ui_print "   "
-		ui_print "  Selected: $BF"
+		ui_print "  Selected: $HF"
+	fi
 
+	ui_print "   "
+	ui_print "- Which BODY font style?"
+	ui_print "  Vol+ = Select; Vol- = OK"
+	ui_print "   "
+	ui_print "  1. Default"
+	ui_print "  2. Rounded"
+	ui_print "  3. Text"
+	ui_print "   "
+	ui_print "  Select:"
+	while true; do
+		ui_print "  $BF"
+		if $VKSEL; then
+			BF=$((BF + 1))
+		else 
+			break
+		fi
+		if [ $BF -gt 3 ]; then
+			BF=1
+		fi
+	done
+	ui_print "   "
+	ui_print "  Selected: $BF"
+
+	ui_print "   "
+	ui_print "- Use BOLD font?"
+	ui_print "  Vol+ = Yes; Vol- = No"
+	ui_print "   "
+	if $VKSEL; then
+		BOLD=1
+		ui_print "  Selected: Yes"
+	else
+		ui_print "  Selected: No"	
+	fi
+
+	if [ $BOLD -eq 1 ]; then
 		ui_print "   "
-		ui_print "- Use BOLD font?"
+		ui_print "- How much BOLD?"
+		ui_print "  Vol+ = Select; Vol- = OK"
+		ui_print "   "
+		ui_print "  1. Light"
+		ui_print "  2. Medium"
+		if [ $HF -eq $BF ] && [ $PART -eq 1 ]; then
+			ui_print "  3. Strong"
+		fi
+		ui_print "   "
+		ui_print "  Select:"
+		while true; do
+			ui_print "  $BOLD"
+			if $VKSEL; then
+				BOLD=$((BOLD + 1))
+			else 
+				break
+			fi
+			if [ $BOLD -eq 3 ]; then
+				if [ $HF -ne $BF ] || [ $PART -ne 1 ]; then
+					BOLD=1
+				fi
+			fi
+			if [ $BOLD -gt 3 ] ; then
+				BOLD=1
+			fi
+		done
+		ui_print "   "
+		ui_print "  Selected: $BOLD"
+	fi
+
+	if [ $BOLD -eq 0 ]; then
+		ui_print "   "
+		ui_print "- High Legibility?"
 		ui_print "  Vol+ = Yes; Vol- = No"
 		ui_print "   "
 		if $VKSEL; then
-			BOLD=1
+			LEGIBLE=true
 			ui_print "  Selected: Yes"
 		else
 			ui_print "  Selected: No"	
 		fi
-
-		if [ $BOLD -eq 1 ]; then
-			ui_print "   "
-			ui_print "- How much BOLD?"
-			ui_print "  Vol+ = Select; Vol- = OK"
-			ui_print "   "
-			ui_print "  1. Light"
-			ui_print "  2. Medium"
-			if [ $HF -eq $BF ]; then
-				ui_print "  3. Strong"
-			fi
-			ui_print "   "
-			ui_print "  Select:"
-			while true; do
-				ui_print "  $BOLD"
-				if $VKSEL; then
-					BOLD=$((BOLD + 1))
-				else 
-					break
-				fi
-				if [ $BOLD -gt 2 ] && [ $HF -ne $BF ]; then
-					BOLD=1
-				elif [ $BOLD -gt 3 ] ; then
-					BOLD=1
-				fi
-			done
-			ui_print "   "
-			ui_print "  Selected: $BOLD"
-		fi
-
-		if [ $BOLD -eq 0 ]; then
-			ui_print "   "
-			ui_print "- High Legibility?"
-			ui_print "  Vol+ = Yes; Vol- = No"
-			ui_print "   "
-			if $VKSEL; then
-				LEGIBLE=true
-				ui_print "  Selected: Yes"
-			else
-				ui_print "  Selected: No"	
-			fi
-		fi
 	fi
 
-fi
+fi #OPTIONS
 
 ### INSTALLATION ###
 ui_print "   "
 ui_print "- Installing"
 
 mkdir -p $SYSFONT $SYSETC $PRDFONT
-patch
+if [ $PART -eq 1 ]; then patch; fi
 
 case $PART in
  	1 ) full;;
