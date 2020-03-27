@@ -178,10 +178,38 @@ miui() {
 	fi
 }
 
+lg() {
+	if i=$(grep lg-sans-serif $SYSXML); then
+		sed -i '/\"lg-sans-serif\">/,/family>/{s/Roboto-M/M/;s/Roboto-B/B/}' $SYSXML
+		if [ $PART -eq 1 ]; then
+			sed -i '/\"lg-sans-serif\">/,/family>/{s/Roboto-T/T/;s/Roboto-L/L/;s/Roboto-R/R/;s/Roboto-I/I/}' $SYSXML
+			if [ $BOLD -eq 3 ]; then
+				sed -i '/\"lg-sans-serif\">/,/family>/{/400/d;/>Light\./{N;h;d};/MediumItalic/G;/>Black\./{N;h;d};/BoldItalic/G}' $SYSXML
+			fi
+		fi
+		LG=true
+	fi
+	if [ -f $ORIGDIR/system/etc/fonts_lge.xml ]; then
+		cp $ORIGDIR/system/etc/fonts_lge.xml $SYSETC
+		LGXML=$SYSETC/fonts_lge.xml
+		sed -i '/\"default_roboto\">/,/family>/{s/Roboto-M/M/;s/Roboto-B/B/}' $LGXML
+		if [ $PART -eq 1 ]; then
+			sed -i '/\"default_roboto\">/,/family>/{s/Roboto-T/T/;s/Roboto-L/L/;s/Roboto-R/R/;s/Roboto-I/I/}' $LGXML
+			if [ $BOLD -eq 3 ]; then
+				sed -i '/\"default_roboto\">/,/family>/{/400/d;/>Light\./{N;h;d};/MediumItalic/G}' $LGXML
+			fi
+		fi
+		LG=true
+	fi
+	if $LG; then sed -ie 3's/$/-lg&/' $MODPROP; fi
+}
+
 rom() {
 	pixel
 	if ! $PXL; then oxygen
 		if ! $OOS; then miui
+			if ! $MIUI; then lg
+			fi
 		fi
 	fi
 }
@@ -379,7 +407,7 @@ if $LEGIBLE; then
 	legible; sed -ie 3's/$/-lgbl&/' $MODPROP
 fi
 
-PXL=false; OOS=false; MIUI=false
+PXL=false; OOS=false; MIUI=false; LG=false
 rom
 
 ### CLEAN UP ###
