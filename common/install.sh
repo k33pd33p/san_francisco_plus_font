@@ -171,9 +171,9 @@ lg() {
 		sed -i '/\"default_roboto\">/,/family>/{s/Roboto-T/T/;s/Roboto-L/L/;s/Roboto-R/R/;s/Roboto-I/I/}' $LGXML
 		if [ $PART -eq 1 ]; then
 			sed -i '/\"default_roboto\">/,/family>/{s/Roboto-M/M/;s/Roboto-B/B/}' $LGXML
-		fi
-		if [ $BOLD -eq 3 ]; then
-			sed -i '/\"default_roboto\">/,/family>/{/400/d;/>Light\./{N;h;d};/MediumItalic/G}' $LGXML
+			if [ $BOLD -eq 3 ]; then
+				sed -i '/\"default_roboto\">/,/family>/{/400/d;/>Light\./{N;h;d};/MediumItalic/G}' $LGXML
+			fi
 		fi
 		LG=true
 		sed -ie 3's/$/-lg&/' $MODPROP
