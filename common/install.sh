@@ -6,7 +6,13 @@ SYSXML=$SYSETC/fonts.xml
 MODPROP=$MODPATH/module.prop
 
 patch() {
-	cp $ORIGDIR/system/etc/fonts.xml $SYSXML
+	if i=$(grep 'family >' /system/etc/fonts.xml); then
+		cp $ORIGDIR/system/etc/fonts.xml $SYSXML
+	else
+		find /data/adb/modules* -type f -name fonts.xml -exec rm {} \;
+		cp /system/etc/fonts.xml $SYSXML
+		sed -ie 3's/$/-WARN&/' $MODPROP
+	fi
 	sed -i '/\"sans-serif\">/,/family>/H;1,/family>/{/family>/G}' $SYSXML
 	sed -i ':a;N;$!ba;s/name=\"sans-serif\"//2' $SYSXML
 }
@@ -202,6 +208,7 @@ googlesans() {
 		SYSXML=$NVBASE/modules/googlesansplus/system/etc/fonts.xml
 		GS=true
 	fi
+	if $GS; then sed -ie 3's/$/-GS&/' $MODPROP; fi
 }
 
 ### SELECTIONS ###
