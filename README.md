@@ -12,3 +12,11 @@ San Francisco font with additional features and improvements.
 
 ## Thanks
 [MMT-Extended](https://github.com/Zackptg5/MMT-Extended)
+
+## Previews
+![img](https://raw.githubusercontent.com/nongthaihoang/gs_images/master/sfp/1.png)
+![img](https://raw.githubusercontent.com/nongthaihoang/gs_images/master/sfp/2.png)
+![img](https://raw.githubusercontent.com/nongthaihoang/gs_images/master/sfp/3.png)
+![img](https://raw.githubusercontent.com/nongthaihoang/gs_images/master/sfp/4.png)
+![img](https://raw.githubusercontent.com/nongthaihoang/gs_images/master/sfp/5.png)
+![img](https://raw.githubusercontent.com/nongthaihoang/gs_images/master/sfp/6.png)
