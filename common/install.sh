@@ -320,7 +320,7 @@ if $OPTION; then
 		ui_print "   "
 		ui_print "  1. Light"
 		ui_print "  2. Medium"
-		if [ $HF -eq $BF ] && [ $PART -eq 1 ]; then
+		if [ $HF -eq $BF ]; then
 			ui_print "  3. Strong"
 		fi
 		ui_print "   "
@@ -332,12 +332,9 @@ if $OPTION; then
 			else 
 				break
 			fi
-			if [ $BOLD -eq 3 ]; then
-				if [ $HF -ne $BF ] || [ $PART -ne 1 ]; then
-					BOLD=1
-				fi
-			fi
-			if [ $BOLD -gt 3 ] ; then
+			if [ $BOLD -gt 2 ] && [ $HF -ne $BF ]; then
+				BOLD=1
+			elif [ $BOLD -gt 3 ] ; then
 				BOLD=1
 			fi
 		done
