@@ -14,18 +14,18 @@ patch() {
 		cp /system/etc/fonts.xml $SYSXML
 		sed -ie 3's/$/-!&/' $MODPROP
 	fi
-	sed -i '/\"sans-serif\">/,/family>/H;1,/family>/{/family>/G}' $SYSXML
-	sed -i ':a;N;$!ba;s/name=\"sans-serif\"//2' $SYSXML
+	sed -i '/"sans-serif">/,/family>/H;1,/family>/{/family>/G}' $SYSXML
+	sed -i ':a;N;$!ba;s/name="sans-serif"//2' $SYSXML
 }
 
 headline() {
 	cp $FONTDIR/hf/*ttf $SYSFONT
-	sed -i '/\"sans-serif\">/,/family>/{s/Roboto-M/M/;s/Roboto-B/B/}' $SYSXML
+	sed -i '/"sans-serif">/,/family>/{s/Roboto-M/M/;s/Roboto-B/B/}' $SYSXML
 }
 
 body() {
 	cp $FONTDIR/bf/*ttf $SYSFONT 
-	sed -i '/\"sans-serif\">/,/family>/{s/Roboto-T/T/;s/Roboto-L/L/;s/Roboto-R/R/;s/Roboto-I/I/}' $SYSXML
+	sed -i '/"sans-serif">/,/family>/{s/Roboto-T/T/;s/Roboto-L/L/;s/Roboto-R/R/;s/Roboto-I/I/}' $SYSXML
 }
 
 condensed() {
@@ -54,8 +54,8 @@ bold() {
 	if [ $BOLD -eq 1 ]; then cp $SRC/25/*ttf $SYSFONT
 	elif [ $BOLD -eq 2 ]; then cp $SRC/50/*ttf $SYSFONT
 	else
-		sed -i '/\"sans-serif\">/,/family>/{/400/d;/>Light\./{N;h;d};/MediumItalic/G;/>Black\./{N;h;d};/BoldItalic/G}' $SYSXML
-		sed -i '/\"sans-serif-condensed\">/,/family>/{/400/d;/-Light\./{N;h;d};/MediumItalic/G}' $SYSXML
+		sed -i '/"sans-serif">/,/family>/{/400/d;/>Light\./{N;h;d};/MediumItalic/G;/>Black\./{N;h;d};/BoldItalic/G}' $SYSXML
+		sed -i '/"sans-serif-condensed">/,/family>/{/400/d;/-Light\./{N;h;d};/MediumItalic/G}' $SYSXML
 	fi
 }
 
@@ -135,17 +135,17 @@ miui() {
 
 lg() {
 	if i=$(grep lg-sans-serif $SYSXML); then
-		sed -i '/\"lg-sans-serif\">/,/family>/{/\"lg-sans-serif\">/!d};/\"sans-serif\">/,/family>/{/\"sans-serif\">/!H};/\"lg-sans-serif\">/G' $SYSXML
+		sed -i '/"lg-sans-serif">/,/family>/{/"lg-sans-serif">/!d};/"sans-serif">/,/family>/{/"sans-serif">/!H};/"lg-sans-serif">/G' $SYSXML
 		LG=true
 	fi
 	if [ -f $ORIGDIR/system/etc/fonts_lge.xml ]; then
 		cp $ORIGDIR/system/etc/fonts_lge.xml $SYSETC
 		LGXML=$SYSETC/fonts_lge.xml
-		sed -i '/\"default_roboto\">/,/family>/{s/Roboto-T/T/;s/Roboto-L/L/;s/Roboto-R/R/;s/Roboto-I/I/}' $LGXML
+		sed -i '/"default_roboto">/,/family>/{s/Roboto-T/T/;s/Roboto-L/L/;s/Roboto-R/R/;s/Roboto-I/I/}' $LGXML
 		if [ $PART -eq 1 ]; then
-			sed -i '/\"default_roboto\">/,/family>/{s/Roboto-M/M/;s/Roboto-B/B/}' $LGXML
+			sed -i '/"default_roboto">/,/family>/{s/Roboto-M/M/;s/Roboto-B/B/}' $LGXML
 			if [ $BOLD -eq 3 ]; then
-				sed -i '/\"default_roboto\">/,/family>/{/400/d;/>Light\./{N;h;d};/MediumItalic/G}' $LGXML
+				sed -i '/"default_roboto">/,/family>/{/400/d;/>Light\./{N;h;d};/MediumItalic/G}' $LGXML
 			fi
 		fi
 		LG=true
