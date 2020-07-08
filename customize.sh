@@ -72,7 +72,7 @@ legible() {
 
 clean_up() {
 	rm -rf $FONTDIR $MODPATH/LICENSE
-	rmdir -p $PRDFONT
+	rmdir -p $PRDFONT $SYSETC
 }
 
 version() { sed -i 3"s/$/-$1&/" $MODPROP; }
@@ -206,7 +206,7 @@ if $OPTION; then
 	if $GS; then
 		ui_print "  "
 		ui_print "- WHERE to install?"
-		ui_print "  $KEY1 = Select; $KEY2 = Ok"
+		ui_print "  $KEY1 = Next Option; $KEY2 = Ok"
 		ui_print "  "
 		ui_print "  1. Full"
 		ui_print "  2. Body"
@@ -225,7 +225,7 @@ if $OPTION; then
 	if [ $PART -eq 1 ]; then
 		ui_print "  "
 		ui_print "- Which HEADLINE font style?"
-		ui_print "  $KEY1 = Select; $KEY2 = OK"
+		ui_print "  $KEY1 = Next Option; $KEY2 = OK"
 		ui_print "  "
 		ui_print "  1. Default"
 		ui_print "  2. Rounded"
@@ -245,7 +245,7 @@ if $OPTION; then
 
 	ui_print "  "
 	ui_print "- Which BODY font style?"
-	ui_print "  $KEY1 = Select; $KEY2 = OK"
+	ui_print "  $KEY1 = Next Option; $KEY2 = OK"
 	ui_print "  "
 	ui_print "  1. Default"
 	ui_print "  2. Rounded"
@@ -271,7 +271,7 @@ if $OPTION; then
 	if [ $BOLD -eq 1 ]; then
 		ui_print "  "
 		ui_print "- How much BOLD?"
-		ui_print "  $KEY1 = Select; $KEY2 = OK"
+		ui_print "  $KEY1 = Next Option; $KEY2 = OK"
 		ui_print "  "
 		ui_print "  1. Light"
 		ui_print "  2. Medium"
@@ -303,7 +303,7 @@ fi #OPTIONS
 ui_print "  "
 ui_print "- Installing"
 mkdir -p $SYSFONT $SYSETC $PRDFONT
-[ $PART -eq 1 ] && { patch; full } || { body; condensed; mono; version bf; }
+[ $PART -eq 1 ] && { patch; full; } || { body; condensed; mono; version bf; }
 [ $HF -eq 2 ] && { rounded; version hfrnd; }
 [ $BF -eq 2 ] && { rounded; version bfrnd; } || [ $BF -eq 3 ] && { text; version bftxt; }
 [ $BOLD -ne 0 ] && { bold; version bld; }

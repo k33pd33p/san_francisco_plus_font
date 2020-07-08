@@ -1,8 +1,8 @@
 ui_print "  "
 ui_print "- Selector -"
 ui_print "  Volume Key"
-{ i=$(getevent -qc 30) && ui_print "  ✓"; } &
-sleep 1.5; pkill getevent || { . $FONTDIR/volkey.sh; return; }
+{ i=$(getevent -qc 30) && { ui_print "  ✓"; sleep 0.4; } } &
+sleep 1; pkill getevent || { . $FONTDIR/volkey.sh; return; }
 ui_print "  Touch Screen"
 i=$(timeout 2 getevent -qc 30) && { ui_print "  ✓"; sleep 0.4; SEL=selector; } || return
 
