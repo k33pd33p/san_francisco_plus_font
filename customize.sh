@@ -154,6 +154,14 @@ lg() {
 	$LG && version lg
 }
 
+samsung() {
+		if grep -q Samsung $SYSXML; then
+			sed -i 's/SECRobotoLight-//;s/SECCondensed-/Condensed-/' $SYSXML
+			[ $PART -eq 1 ] && sed -i 's/SECRobotoLight-Bold/Medium/' $SYSXML
+			version sam; SAM=true
+		fi
+}
+
 rom() {
 	PXL=false; OOS=false; MIUI=false; LG=false; SAM=false
 	pixel
