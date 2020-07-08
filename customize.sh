@@ -85,22 +85,22 @@ pixel() {
 	fi
 	if [ $DST ]; then
 		if [ $PART -eq 1 ]; then
-			SRC=$FONTDIR/bf
-			[ $HF -eq 2 ] && SRC=$FONTDIR/rd/bf
 			set BoldItalic Bold MediumItalic Medium
 			for i do cp $SYSFONT/$i.ttf $DST/GoogleSans-$i.ttf; done
-			cp $SRC/Regular.ttf $DST/GoogleSans-Regular.ttf
 			cp $FONTDIR/bf/Italic.ttf $DST/GoogleSans-Italic.ttf
+			SRC=$FONTDIR/bf
+			[ $HF -eq 2 ] && SRC=$FONTDIR/rd/hf
+			cp $SRC/Regular.ttf $DST/GoogleSans-Regular.ttf
 			if [ $BOLD -ne 0 ]; then
 				if [ $BOLD -eq 3 ]; then
 					cp $DST/GoogleSans-Medium.ttf $DST/GoogleSans-Regular.ttf
 					cp $DST/GoogleSans-MediumItalic.ttf $DST/GoogleSans-Italic.ttf
 				else
 					SRC=$FONTDIR/bf/bd
-					[ $HF -eq 2 ] && SRC=$FONTDIR/tx/bf/bd
 					[ $BOLD -eq 1 ] && SRC=$SRC/25 || SRC=$SRC/50
-					cp $SRC/Regular.ttf $DST/GoogleSans-Regular.ttf
 					cp $SRC/Italic.ttf $DST/GoogleSans-Italic.ttf
+					[ $HF -eq 2 ] && SRC=$FONTDIR/rd/bf/bd && ( [ $BOLD -eq 1 ] && SRC=$SRC/25 || SRC=$SRC/50 )
+					cp $SRC/Regular.ttf $DST/GoogleSans-Regular.ttf
 				fi
 			fi
 		fi
