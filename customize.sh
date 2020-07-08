@@ -51,7 +51,7 @@ text() { cp $FONTDIR/tx/*ttf $SYSFONT; }
 
 bold() {
 	local src=$FONTDIR/bf/bd
-	[ $BF -eq 2 ] && src=$FONTDIR/rd/bf/bd || [ $BF -eq 3 ] && src=$FONTDIR/tx/bd
+	[ $BF -eq 2 ] && src=$FONTDIR/rd/bf/bd || ( [ $BF -eq 3 ] && src=$FONTDIR/tx/bd )
 	if [ $BOLD -eq 1 ]; then cp $src/25/*ttf $SYSFONT
 	elif [ $BOLD -eq 2 ]; then cp $src/50/*ttf $SYSFONT
 	else
@@ -62,7 +62,7 @@ bold() {
 
 legible() {
 	local src=$FONTDIR/bf/hl
-	[ $BF -eq 2 ] && src=$FONTDIR/rd/bf/hl || [ $BF -eq 3 ] && src=$FONTDIR/tx/hl
+	[ $BF -eq 2 ] && src=$FONTDIR/rd/bf/hl || ( [ $BF -eq 3 ] && src=$FONTDIR/tx/hl )
 	cp $src/*ttf $SYSFONT
 }
 
@@ -155,11 +155,11 @@ lg() {
 }
 
 samsung() {
-		if grep -q Samsung $SYSXML; then
-			sed -i 's/SECRobotoLight-//;s/SECCondensed-/Condensed-/' $SYSXML
-			[ $PART -eq 1 ] && sed -i 's/SECRobotoLight-Bold/Medium/' $SYSXML
-			version sam; SAM=true
-		fi
+	if grep -q Samsung $SYSXML; then
+		sed -i 's/SECRobotoLight-//;s/SECCondensed-/Condensed-/' $SYSXML
+		[ $PART -eq 1 ] && sed -i 's/SECRobotoLight-Bold/Medium/' $SYSXML
+		version sam; SAM=true
+	fi
 }
 
 rom() {
@@ -289,7 +289,7 @@ ui_print "- Installing"
 mkdir -p $SYSFONT $SYSETC $PRDFONT
 [ $PART -eq 1 ] && { patch; full; } || { body; condensed; mono; version bf; }
 [ $HF -eq 2 ] && { rounded; version hfrnd; }
-[ $BF -eq 2 ] && { rounded; version bfrnd; } || [ $BF -eq 3 ] && { text; version bftxt; }
+[ $BF -eq 2 ] && { rounded; version bfrnd; } || ( [ $BF -eq 3 ] && { text; version bftxt; } )
 [ $BOLD -ne 0 ] && { bold; version bld; }
 $LEGIBLE && { legible; version lgbl; }
 rom
