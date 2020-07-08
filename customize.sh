@@ -43,19 +43,17 @@ mono() {
 full() { headline; body; condensed; mono; }
 
 rounded() {
-	[ $HF -eq 2 ] && $FONTDIR/rd/hf/*ttf $SYSFONT
-	[ $BF -eq 2 ] && $FONTDIR/rd/bf/*ttf $SYSFONT
+	[ $HF -eq 2 ] && cp $FONTDIR/rd/hf/*ttf $SYSFONT
+	[ $BF -eq 2 ] && cp $FONTDIR/rd/bf/*ttf $SYSFONT
 }
 
 text() { cp $FONTDIR/tx/*ttf $SYSFONT; }
 
 bold() {
-	SRC=$FONTDIR/bf/bd
-	if [ $BF -eq 2 ]; then SRC=$FONTDIR/rd/bf/bd
-	elif [ $BF -eq 3 ]; then SRC=$FONTDIR/tx/bd
-	fi
-	if [ $BOLD -eq 1 ]; then cp $SRC/25/*ttf $SYSFONT
-	elif [ $BOLD -eq 2 ]; then cp $SRC/50/*ttf $SYSFONT
+	local src=$FONTDIR/bf/bd
+	[ $BF -eq 2 ] && src=$FONTDIR/rd/bf/bd || [ $BF -eq 3 ] && src=$FONTDIR/tx/bd
+	if [ $BOLD -eq 1 ]; then cp $src/25/*ttf $SYSFONT
+	elif [ $BOLD -eq 2 ]; then cp $src/50/*ttf $SYSFONT
 	else
 		sed -i '/"sans-serif">/,/family>/{/400/d;/>Light\./{N;h;d};/MediumItalic/G;/>Black\./{N;h;d};/BoldItalic/G}' $SYSXML
 		sed -i '/"sans-serif-condensed">/,/family>/{/400/d;/-Light\./{N;h;d};/MediumItalic/G}' $SYSXML
@@ -63,11 +61,9 @@ bold() {
 }
 
 legible() {
-	SRC=$FONTDIR/bf/hl
-	if [ $BF -eq 2 ]; then SRC=$FONTDIR/rd/bf/hl
-	elif [ $BF -eq 3 ]; then SRC=$FONTDIR/tx/hl
-	fi
-	cp $SRC/*ttf $SYSFONT
+	local src=$FONTDIR/bf/hl
+	[ $BF -eq 2 ] && src=$FONTDIR/rd/bf/hl || [ $BF -eq 3 ] && src=$FONTDIR/tx/hl
+	cp $src/*ttf $SYSFONT
 }
 
 clean_up() {
@@ -78,29 +74,31 @@ clean_up() {
 version() { sed -i 3"s/$/-$1&/" $MODPROP; }
 
 pixel() {
+	local src dest
 	if [ -f $ORIGDIR/product/fonts/GoogleSans-Regular.ttf ]; then
-		DST=$PRDFONT
+		dest=$PRDFONT
 	elif [ -f $ORIGDIR/system/fonts/GoogleSans-Regular.ttf ]; then
-		DST=$SYSFONT
+		dest=$SYSFONT
 	fi
-	if [ $DST ]; then
+	if [ $dest ]; then
 		if [ $PART -eq 1 ]; then
 			set BoldItalic Bold MediumItalic Medium
-			for i do cp $SYSFONT/$i.ttf $DST/GoogleSans-$i.ttf; done
-			cp $FONTDIR/bf/Italic.ttf $DST/GoogleSans-Italic.ttf
-			SRC=$FONTDIR/bf
-			[ $HF -eq 2 ] && SRC=$FONTDIR/rd/hf
-			cp $SRC/Regular.ttf $DST/GoogleSans-Regular.ttf
+			for i do cp $SYSFONT/$i.ttf $dest/GoogleSans-$i.ttf; done
+			src=$FONTDIR/bf
+			cp $src/Italic.ttf $dest/GoogleSans-Italic.ttf
+			[ $HF -eq 2 ] && src=$FONTDIR/rd/bf
+			cp $src/Regular.ttf $dest/GoogleSans-Regular.ttf
 			if [ $BOLD -ne 0 ]; then
 				if [ $BOLD -eq 3 ]; then
-					cp $DST/GoogleSans-Medium.ttf $DST/GoogleSans-Regular.ttf
-					cp $DST/GoogleSans-MediumItalic.ttf $DST/GoogleSans-Italic.ttf
+					cp $dest/GoogleSans-Medium.ttf $dest/GoogleSans-Regular.ttf
+					cp $dest/GoogleSans-MediumItalic.ttf $dest/GoogleSans-Italic.ttf
 				else
-					SRC=$FONTDIR/bf/bd
-					[ $BOLD -eq 1 ] && SRC=$SRC/25 || SRC=$SRC/50
-					cp $SRC/Italic.ttf $DST/GoogleSans-Italic.ttf
-					[ $HF -eq 2 ] && SRC=$FONTDIR/rd/bf/bd && ( [ $BOLD -eq 1 ] && SRC=$SRC/25 || SRC=$SRC/50 )
-					cp $SRC/Regular.ttf $DST/GoogleSans-Regular.ttf
+					src=$FONTDIR/bf/bd
+					local bold
+					[ $BOLD -eq 1 ] && bold=25 || bold=50
+					cp $src/$bold/Italic.ttf $dest/GoogleSans-Italic.ttf
+					[ $HF -eq 2 ] && src=$FONTDIR/rd/bf/bd
+					cp $src/$bold/Regular.ttf $dest/GoogleSans-Regular.ttf
 				fi
 			fi
 		fi
@@ -145,11 +143,11 @@ lg() {
 	fi
 	if [ -f $ORIGDIR/system/etc/fonts_lge.xml ]; then
 		cp $ORIGDIR/system/etc/fonts_lge.xml $SYSETC
-		LGXML=$SYSETC/fonts_lge.xml
-		sed -i '/"default_roboto">/,/family>/{s/Roboto-T/T/;s/Roboto-L/L/;s/Roboto-R/R/;s/Roboto-I/I/}' $LGXML
+		local lgxml=$SYSETC/fonts_lge.xml
+		sed -i '/"default_roboto">/,/family>/{s/Roboto-T/T/;s/Roboto-L/L/;s/Roboto-R/R/;s/Roboto-I/I/}' $lgxml
 		if [ $PART -eq 1 ]; then
-			sed -i '/"default_roboto">/,/family>/{s/Roboto-M/M/;s/Roboto-B/B/}' $LGXML
-			[ $BOLD -eq 3 ] && sed -i '/"default_roboto">/,/family>/{/400/d;/>Light\./{N;h;d};/MediumItalic/G}' $LGXML
+			sed -i '/"default_roboto">/,/family>/{s/Roboto-M/M/;s/Roboto-B/B/}' $lgxml
+			[ $BOLD -eq 3 ] && sed -i '/"default_roboto">/,/family>/{/400/d;/>Light\./{N;h;d};/MediumItalic/G}' $lgxml
 		fi
 		LG=true
 	fi
@@ -169,17 +167,14 @@ rom() {
 	fi
 }
 
-googlesans() {
-	GS=false
-	local MODUP=/data/adb/modules_update/googlesansplus MOD=/data/adb/modules/googlesansplus
-	if grep -q -e 'hf-' -e 'hf$' $MODUP/module.prop; then
-		SYSXML=$MODUP/system/etc/fonts.xml
-		GS=true
-	elif grep -q -e 'hf-' -e 'hf$' $MOD/module.prop; then
-		SYSXML=$MOD/system/etc/fonts.xml
-		GS=true
+gsp() {
+	GSP=false
+	local gsp=/data/adb/modules_update/googlesansplus
+	if grep -q -e 'hf-' -e 'hf$' $gsp/module.prop; then
+		SYSXML=$gsp/system/etc/fonts.xml
+		GSP=true
 	fi
-	$GS && version GS
+	$GSP && version gsp
 }
 
 ### SELECTIONS ###
@@ -190,7 +185,7 @@ BF=1
 BOLD=0
 LEGIBLE=false
 
-googlesans
+gsp
 
 . $FONTDIR/selector.sh
 
@@ -203,26 +198,7 @@ fi
 
 if $OPTION; then
 
-	if $GS; then
-		ui_print "  "
-		ui_print "- WHERE to install?"
-		ui_print "  $KEY1 = Next Option; $KEY2 = Ok"
-		ui_print "  "
-		ui_print "  1. Full"
-		ui_print "  2. Body"
-		ui_print "  "
-		ui_print "  Select:"
-		while true; do
-			ui_print "  $PART"
-			$SEL && PART=$((PART + 1)) || break
-			[ $PART -gt 2 ] && PART=1
-		done
-		ui_print "  "
-		ui_print "  Selected: $PART"
-		sleep 0.4
-	fi
-
-	if [ $PART -eq 1 ]; then
+	if ! $GSP; then
 		ui_print "  "
 		ui_print "- Which HEADLINE font style?"
 		ui_print "  $KEY1 = Next Option; $KEY2 = OK"
@@ -240,7 +216,7 @@ if $OPTION; then
 		ui_print "  Selected: $HF"
 		sleep 0.4
 	else
-		HF=0
+		PART=2; HF=0
 	fi
 
 	ui_print "  "
@@ -281,7 +257,7 @@ if $OPTION; then
 		while true; do
 			ui_print "  $BOLD"
 			$SEL && BOLD=$((BOLD + 1)) || break
-			(( [ $BOLD -gt 2 ] && [ $HF -ne $BF ] ) || [ $BOLD -gt 3 ] ) && BOLD=1
+			( [ $BOLD -gt 2 ] && [ $HF -ne $BF ] || [ $BOLD -gt 3 ] ) && BOLD=1
 		done
 		ui_print "  "
 		ui_print "  Selected: $BOLD"
