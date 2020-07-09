@@ -3,7 +3,7 @@ ui_print "- Selector -"
 ui_print "  Volume Key"
 (i=$(getevent -qc 30) && ( ui_print "  ✓"; sleep 0.4 )) & sleep 1; pkill getevent || { . $FONTDIR/volkey.sh; return; }
 ui_print "  Touch Screen"
-i=$(timeout 2 getevent -qc 30) && { ui_print "  ✓"; sleep 0.4 & SEL=selector; } || return
+i=$(timeout 2 getevent -qc 30) && { ui_print "  ✓"; sleep 0.4; SEL=selector; } || return
 
 selector() {
 	rm swipe tap
