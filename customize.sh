@@ -51,7 +51,7 @@ text() { cp $FONTDIR/tx/*ttf $SYSFONT; }
 
 bold() {
 	local src=$FONTDIR/bf/bd
-	[ $BF -eq 2 ] && src=$FONTDIR/rd/bf/bd || ( [ $BF -eq 3 ] && src=$FONTDIR/tx/bd )
+	[ $BF -eq 2 ] && src=$FONTDIR/rd/bf/bd || { [ $BF -eq 3 ] && src=$FONTDIR/tx/bd; }
 	if [ $BOLD -eq 1 ]; then cp $src/25/*ttf $SYSFONT
 	elif [ $BOLD -eq 2 ]; then cp $src/50/*ttf $SYSFONT
 	else
@@ -62,7 +62,7 @@ bold() {
 
 legible() {
 	local src=$FONTDIR/bf/hl
-	[ $BF -eq 2 ] && src=$FONTDIR/rd/bf/hl || ( [ $BF -eq 3 ] && src=$FONTDIR/tx/hl )
+	[ $BF -eq 2 ] && src=$FONTDIR/rd/bf/hl || { [ $BF -eq 3 ] && src=$FONTDIR/tx/hl; } 
 	cp $src/*ttf $SYSFONT
 }
 
