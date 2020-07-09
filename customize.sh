@@ -94,11 +94,11 @@ pixel() {
 					cp $dest/GoogleSans-MediumItalic.ttf $dest/GoogleSans-Italic.ttf
 				else
 					src=$FONTDIR/bf/bd
-					local bold
-					[ $BOLD -eq 1 ] && bold=25 || bold=50
-					cp $src/$bold/Italic.ttf $dest/GoogleSans-Italic.ttf
+					local x
+					[ $BOLD -eq 1 ] && x=25 || x=50
+					cp $src/$x/Italic.ttf $dest/GoogleSans-Italic.ttf
 					[ $HF -eq 2 ] && src=$FONTDIR/rd/bf/bd
-					cp $src/$bold/Regular.ttf $dest/GoogleSans-Regular.ttf
+					cp $src/$x/Regular.ttf $dest/GoogleSans-Regular.ttf
 				fi
 			fi
 		fi
@@ -163,7 +163,7 @@ samsung() {
 }
 
 rom() {
-	PXL=false; OOS=false; MIUI=false; LG=false; SAM=false
+	PXL=false & OOS=false & MIUI=false & LG=false & SAM=false
 	pixel
 	if ! $PXL; then oxygen
 		if ! $OOS; then miui
@@ -215,7 +215,7 @@ if $OPTION; then
 		ui_print "  2. Rounded"
 		ui_print "  "
 		ui_print "  Select:"
-		while true; do
+		while :; do
 			ui_print "  $HF"
 			$SEL && HF=$((HF + 1)) || break
 			[ $HF -gt 2 ] && HF=1
@@ -224,7 +224,7 @@ if $OPTION; then
 		ui_print "  Selected: $HF"
 		sleep 0.4
 	else
-		PART=2; HF=0
+		PART=2
 	fi
 
 	ui_print "  "
@@ -236,7 +236,7 @@ if $OPTION; then
 	ui_print "  3. Text"
 	ui_print "  "
 	ui_print "  Select:"
-	while true; do
+	while :; do
 		ui_print "  $BF"
 		$SEL && BF=$((BF + 1)) || break
 		[ $BF -gt 3 ] && BF=1
@@ -249,7 +249,7 @@ if $OPTION; then
 	ui_print "- Use BOLD font?"
 	ui_print "  $KEY1 = Yes; $KEY2 = No"
 	ui_print "  "
-	$SEL && { BOLD=1; ui_print "  Selected: Yes"; } ||  ui_print "  Selected: No"
+	$SEL && { BOLD=1 & ui_print "  Selected: Yes"; } ||  ui_print "  Selected: No"
 	sleep 0.4
 
 	if [ $BOLD -eq 1 ]; then
@@ -262,10 +262,10 @@ if $OPTION; then
 		[ $HF -eq $BF ] && ui_print "  3. Strong"
 		ui_print "  "
 		ui_print "  Select:"
-		while true; do
+		while :; do
 			ui_print "  $BOLD"
 			$SEL && BOLD=$((BOLD + 1)) || break
-			( [ $BOLD -gt 2 ] && [ $HF -ne $BF ] || [ $BOLD -gt 3 ] ) && BOLD=1
+			([ $BOLD -gt 2 ] && [ $HF -ne $BF ] || [ $BOLD -gt 3 ]) && BOLD=1
 		done
 		ui_print "  "
 		ui_print "  Selected: $BOLD"
@@ -277,7 +277,7 @@ if $OPTION; then
 		ui_print "- High Legibility?"
 		ui_print "  $KEY1 = Yes; $KEY2 = No"
 		ui_print "  "
-		$SEL && { LEGIBLE=true; ui_print "  Selected: Yes"; } || ui_print "  Selected: No"	
+		$SEL && { LEGIBLE=true & ui_print "  Selected: Yes"; } || ui_print "  Selected: No"	
 		sleep 0.4
 	fi
 
@@ -287,11 +287,11 @@ fi #OPTIONS
 ui_print "  "
 ui_print "- Installing"
 mkdir -p $SYSFONT $SYSETC $PRDFONT
-[ $PART -eq 1 ] && { patch; full; } || { body; condensed; mono; version bf; }
-[ $HF -eq 2 ] && { rounded; version hfrnd; }
-[ $BF -eq 2 ] && { rounded; version bfrnd; } || ( [ $BF -eq 3 ] && { text; version bftxt; } )
-[ $BOLD -ne 0 ] && { bold; version bld; }
-$LEGIBLE && { legible; version lgbl; }
+[ $PART -eq 1 ] && ( patch; full ) || ( body; condensed; mono & version bf )
+[ $HF -eq 2 ] && ( rounded & version hfrnd )
+[ $BF -eq 2 ] && ( rounded & version bfrnd ) || ([ $BF -eq 3 ] && ( text & version bftxt ))
+[ $BOLD -ne 0 ] && ( bold & version bld )
+$LEGIBLE && ( legible & version lgbl )
 rom
 
 ### CLEAN UP ###
