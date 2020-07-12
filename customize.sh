@@ -43,11 +43,14 @@ mono() {
 full() { headline; body; condensed; mono; }
 
 rounded() {
-	[ $HF -eq 2 ] && cp $FONTDIR/rd/hf/*ttf $SYSFONT
-	[ $BF -eq 2 ] && cp $FONTDIR/rd/bf/*ttf $SYSFONT
+	[ $HF -eq 2 ] && ( cp $FONTDIR/rd/hf/*ttf $SYSFONT; version hfrnd )
+	[ $BF -eq 2 ] && ( cp $FONTDIR/rd/bf/*ttf $SYSFONT; version bfrnd )
 }
 
-text() { cp $FONTDIR/tx/*ttf $SYSFONT; }
+text() {
+	cp $FONTDIR/tx/*ttf $SYSFONT
+	version bftxt
+}
 
 bold() {
 	local src=$FONTDIR/bf/bd
@@ -58,12 +61,14 @@ bold() {
 		sed -i '/"sans-serif">/,/family>/{/400/d;/>Light\./{N;h;d};/MediumItalic/G;/>Black\./{N;h;d};/BoldItalic/G}' $SYSXML
 		sed -i '/"sans-serif-condensed">/,/family>/{/400/d;/-Light\./{N;h;d};/MediumItalic/G}' $SYSXML
 	fi
+	version bld
 }
 
 legible() {
 	local src=$FONTDIR/bf/hl
 	[ $BF -eq 2 ] && src=$FONTDIR/rd/bf/hl || { [ $BF -eq 3 ] && src=$FONTDIR/tx/hl; } 
 	cp $src/*ttf $SYSFONT
+	version lgbl
 }
 
 clean_up() {
@@ -71,11 +76,9 @@ clean_up() {
 	rmdir -p $PRDFONT $SYSETC
 }
 
-version() { sed -i 3"s/$/-$1&/" $MODPROP; }
-
 pixel() {
 	local src dest
-	if [ -f $ORIGDIR/product/fonts/GoogleSans-Regular.ttf ]; then
+	if [ -f $ORIGDIR/product/fonts/GoogleSans-Regular.ttf ] || [ -f $ORIGDIR/system/product/fonts/GoogleSans-Regular.ttf ]; then
 		dest=$PRDFONT
 	elif [ -f $ORIGDIR/system/fonts/GoogleSans-Regular.ttf ]; then
 		dest=$SYSFONT
@@ -102,7 +105,9 @@ pixel() {
 				fi
 			fi
 		fi
-		version pxl; PXL=true
+		version pxl
+	else
+		false
 	fi
 }
 
@@ -111,7 +116,9 @@ oxygen() {
 		set Black Bold Medium Regular Light Thin
 		for i do cp $SYSFONT/$i.ttf $SYSFONT/SlateForOnePlus-$i.ttf; done
 		cp $SYSFONT/Regular.ttf $SYSFONT/SlateForOnePlus-Book.ttf
-		version oos; OOS=true
+		version oos
+	else
+		false
 	fi
 }
 
@@ -132,14 +139,17 @@ miui() {
 		sed -i '/"mipro-light"/,/family>/{/400/s/MiLanProVF/Light/;/700/s/MiLanProVF/Regular/;/stylevalue/d}' $SYSXML
 		sed -i '/"mipro-normal"/,/family>/{/400/s/MiLanProVF/Light/;/700/s/MiLanProVF/Regular/;/stylevalue/d}' $SYSXML
 		sed -i '/"mipro-regular"/,/family>/{/400/s/MiLanProVF/Regular/;/stylevalue="340"/d}' $SYSXML
-		version miui; MIUI=true
+		version miui
+	else
+		false
 	fi
 }
 
 lg() {
+	local lg=false
 	if grep -q lg-sans-serif $SYSXML; then
 		sed -i '/"lg-sans-serif">/,/family>/{/"lg-sans-serif">/!d};/"sans-serif">/,/family>/{/"sans-serif">/!H};/"lg-sans-serif">/G' $SYSXML
-		LG=true
+		lg=true
 	fi
 	if [ -f $ORIGDIR/system/etc/fonts_lge.xml ]; then
 		cp $ORIGDIR/system/etc/fonts_lge.xml $SYSETC
@@ -149,31 +159,26 @@ lg() {
 			sed -i '/"default_roboto">/,/family>/{s/Roboto-M/M/;s/Roboto-B/B/}' $lgxml
 			[ $BOLD -eq 3 ] && sed -i '/"default_roboto">/,/family>/{/400/d;/>Light\./{N;h;d};/MediumItalic/G}' $lgxml
 		fi
-		LG=true
+		lg=true
 	fi
-	$LG && version lg
+	$lg && version lg || false
 }
 
 samsung() {
 	if grep -q Samsung $SYSXML; then
 		sed -i 's/SECRobotoLight-//;s/SECCondensed-/Condensed-/' $SYSXML
 		[ $PART -eq 1 ] && sed -i 's/SECRobotoLight-Bold/Medium/' $SYSXML
-		version sam; SAM=true
+		version sam
+	else
+		false
 	fi
 }
 
 rom() {
-	PXL=false; OOS=false; MIUI=false; LG=false; SAM=false
-	pixel
-	if ! $PXL; then oxygen
-		if ! $OOS; then miui
-			if ! $MIUI; then lg
-				if ! $LG; then samsung
-				fi
-			fi
-		fi
-	fi
+	pixel || oxygen || miui || lg || samsung
 }
+
+version() { sed -i 3"s/$/-$1&/" $MODPROP; }
 
 gsp() {
 	GSP=false
@@ -288,10 +293,10 @@ ui_print "  "
 ui_print "- Installing"
 mkdir -p $SYSFONT $SYSETC $PRDFONT
 [ $PART -eq 1 ] && ( patch; full ) || ( body; condensed; mono & version bf )
-[ $HF -eq 2 ] && ( rounded & version hfrnd )
-[ $BF -eq 2 ] && ( rounded & version bfrnd ) || ([ $BF -eq 3 ] && ( text & version bftxt ))
-[ $BOLD -ne 0 ] && ( bold & version bld )
-$LEGIBLE && ( legible & version lgbl )
+[ $HF -eq 2 ] || [ $BF -eq 2 ] && rounded
+[ $BF -eq 3 ] && text
+[ $BOLD -ne 0 ] && bold
+$LEGIBLE && legible
 rom
 
 ### CLEAN UP ###
