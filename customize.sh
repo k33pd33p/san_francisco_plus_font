@@ -292,7 +292,7 @@ fi #OPTIONS
 ui_print "  "
 ui_print "- Installing"
 mkdir -p $SYSFONT $SYSETC $PRDFONT
-[ $PART -eq 1 ] && ( patch; full ) || ( body; condensed; mono & version bf )
+[ $PART -eq 1 ] && ( patch; full ) || ( body; condensed; mono; version bf )
 [ $HF -eq 2 ] || [ $BF -eq 2 ] && rounded
 [ $BF -eq 3 ] && text
 [ $BOLD -ne 0 ] && bold
