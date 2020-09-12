@@ -53,13 +53,18 @@ text() {
 }
 
 bold() {
-	local src=$FONTDIR/bf/bd
-	[ $BF -eq 2 ] && src=$FONTDIR/rd/bf/bd || { [ $BF -eq 3 ] && src=$FONTDIR/tx/bd; }
-	if [ $BOLD -eq 1 ]; then cp $src/25/*ttf $SYSFONT
-	elif [ $BOLD -eq 2 ]; then cp $src/50/*ttf $SYSFONT
-	else
+	if [ $BOLD -eq 3 ]; then
 		sed -i '/"sans-serif">/,/family>/{/400/d;/>Light\./{N;h;d};/MediumItalic/G;/>Black\./{N;h;d};/BoldItalic/G}' $SYSXML
 		sed -i '/"sans-serif-condensed">/,/family>/{/400/d;/-Light\./{N;h;d};/MediumItalic/G}' $SYSXML
+	else
+		local x=25
+		[ $BOLD -eq 2 ] && x=50
+		cp $FONTDIR/bf/bd/$x/*ttf $SYSFONT
+		if [ $BF -eq 2 ]; then
+			cp $FONTDIR/rd/bf/bd/$x/*ttf $SYSFONT
+		elif [ $BF -eq 3 ]; then
+			cp $FONTDIR/tx/bd/$x/*ttf $SYSFONT
+		fi
 	fi
 	version bld
 }
@@ -69,6 +74,15 @@ legible() {
 	[ $BF -eq 2 ] && src=$FONTDIR/rd/bf/hl || { [ $BF -eq 3 ] && src=$FONTDIR/tx/hl; } 
 	cp $src/*ttf $SYSFONT
 	version lgbl
+}
+
+tracking() {
+	cp $FONTDIR/bf/tr/*ttf $SYSFONT
+	if [ $BF -eq 2 ]; then
+		cp $FONTDIR/rd/tr/*ttf $SYSFONT
+	elif [ $BF -eq 3 ]; then
+		cp $FONTDIR/tx/tr/*ttf $SYSFONT
+	fi
 }
 
 clean_up() {
@@ -197,6 +211,7 @@ HF=1
 BF=1
 BOLD=0
 LEGIBLE=false
+TRACK=0
 
 gsp
 
@@ -286,6 +301,23 @@ if $OPTION; then
 		sleep 0.4
 	fi
 
+	if [ $BOLD -eq 0  && ! $LEGIBLE ]; then
+		ui_print "  "
+		ui_print "- Letter-Spacing?"
+		ui_print "  $KEY1 = Next Option; $KEY2 = OK"
+		ui_print "  "
+		ui_print "  1. Default"
+		[ $BF -eq 3 ] && ui_print "  2. Less"  || ui_print "  2. More"
+		while :; do
+			ui_print "  $TRACK"
+			$SEL && TRACK=$((TRACK + 1)) || break
+			[ $TRACK -gt 2 ] && TRACK=1
+		done
+		ui_print "  "
+		ui_print "  Selected: $TRACK"
+		sleep 0.4
+	fi
+
 fi #OPTIONS
 
 ### INSTALLATION ###
@@ -297,6 +329,7 @@ mkdir -p $SYSFONT $SYSETC $PRDFONT
 [ $BF -eq 3 ] && text
 [ $BOLD -ne 0 ] && bold
 $LEGIBLE && legible
+[ $TRACK -ne 0 ] && tracking
 rom
 
 ### CLEAN UP ###
