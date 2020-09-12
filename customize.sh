@@ -59,12 +59,14 @@ bold() {
 	else
 		local x=25
 		[ $BOLD -eq 2 ] && x=50
-		cp $FONTDIR/bf/bd/$x/*ttf $SYSFONT
-		if [ $BF -eq 2 ]; then
-			cp $FONTDIR/rd/bf/bd/$x/*ttf $SYSFONT
-		elif [ $BF -eq 3 ]; then
-			cp $FONTDIR/tx/bd/$x/*ttf $SYSFONT
+		local src=$FONTDIR/bf
+		if [ $BF -eq 3 ]; then
+			src=$FONTDIR/tx
+		elif [ $BF -eq 2 ]; then
+			cp $scr/bd/$x/Italic.ttf $SYSFONT
+			src=$FONTDIR/rd/bf
 		fi
+		cp $scr/bd/$x/*ttf $SYSFONT
 	fi
 	version bld
 }
@@ -77,12 +79,15 @@ legible() {
 }
 
 tracking() {
-	cp $FONTDIR/bf/tr/*ttf $SYSFONT
-	if [ $BF -eq 2 ]; then
-		cp $FONTDIR/rd/tr/*ttf $SYSFONT
-	elif [ $BF -eq 3 ]; then
-		cp $FONTDIR/tx/tr/*ttf $SYSFONT
+	local src=$FONTDIR/bf/
+	if [ $BF -eq 3 ]; then
+		src=$FONTDIR/tx/
+	elif [ $BF -eq 2 ]; then
+		cp $src/tr/Italic.ttf $SYSFONT
+		src=$FONTDIR/rd/bf/
 	fi
+	cp $src/tr/*ttf $SYSFONT
+	version trk
 }
 
 clean_up() {
@@ -111,8 +116,8 @@ pixel() {
 					cp $dest/GoogleSans-MediumItalic.ttf $dest/GoogleSans-Italic.ttf
 				else
 					src=$FONTDIR/bf/bd
-					local x
-					[ $BOLD -eq 1 ] && x=25 || x=50
+					local x=25
+					[ $BOLD -eq 2 ] && x=50
 					cp $src/$x/Italic.ttf $dest/GoogleSans-Italic.ttf
 					[ $HF -eq 2 ] && src=$FONTDIR/rd/bf/bd
 					cp $src/$x/Regular.ttf $dest/GoogleSans-Regular.ttf
@@ -211,7 +216,7 @@ HF=1
 BF=1
 BOLD=0
 LEGIBLE=false
-TRACK=0
+TRACK=1
 
 gsp
 
@@ -228,7 +233,7 @@ if $OPTION; then
 
 	if ! $GSP; then
 		ui_print "  "
-		ui_print "- Which HEADLINE font style?"
+		ui_print "- HEADLINE font?"
 		ui_print "  $KEY1 = Next Option; $KEY2 = OK"
 		ui_print "  "
 		ui_print "  1. Default"
@@ -248,7 +253,7 @@ if $OPTION; then
 	fi
 
 	ui_print "  "
-	ui_print "- Which BODY font style?"
+	ui_print "- BODY font?"
 	ui_print "  $KEY1 = Next Option; $KEY2 = OK"
 	ui_print "  "
 	ui_print "  1. Default"
@@ -301,13 +306,15 @@ if $OPTION; then
 		sleep 0.4
 	fi
 
-	if [ $BOLD -eq 0  && ! $LEGIBLE ]; then
+	if [ $BOLD -eq 0 ] && ! $LEGIBLE; then
 		ui_print "  "
 		ui_print "- Letter-Spacing?"
 		ui_print "  $KEY1 = Next Option; $KEY2 = OK"
 		ui_print "  "
 		ui_print "  1. Default"
-		[ $BF -eq 3 ] && ui_print "  2. Less"  || ui_print "  2. More"
+		[ $BF -eq 3 ] && ui_print "  2. Decrease"  || ui_print "  2. Increase"
+		ui_print "  "
+		ui_print "  Select:"
 		while :; do
 			ui_print "  $TRACK"
 			$SEL && TRACK=$((TRACK + 1)) || break
@@ -329,7 +336,7 @@ mkdir -p $SYSFONT $SYSETC $PRDFONT
 [ $BF -eq 3 ] && text
 [ $BOLD -ne 0 ] && bold
 $LEGIBLE && legible
-[ $TRACK -ne 0 ] && tracking
+[ $TRACK -ne 1 ] && tracking
 rom
 
 ### CLEAN UP ###
