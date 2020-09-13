@@ -299,15 +299,6 @@ if $OPTION; then
 
 	if [ $BOLD -eq 0 ]; then
 		ui_print "  "
-		ui_print "- High Legibility?"
-		ui_print "  $KEY1 = Yes; $KEY2 = No"
-		ui_print "  "
-		$SEL && { LEGIBLE=true; ui_print "  Selected: Yes"; } || ui_print "  Selected: No"	
-		sleep 0.4
-	fi
-
-	if [ $BOLD -eq 0 ] && ! $LEGIBLE; then
-		ui_print "  "
 		ui_print "- Letter-Spacing?"
 		ui_print "  $KEY1 = Next Option; $KEY2 = OK"
 		ui_print "  "
@@ -322,6 +313,15 @@ if $OPTION; then
 		done
 		ui_print "  "
 		ui_print "  Selected: $TRACK"
+		sleep 0.4
+	fi
+
+	if [ $BOLD -eq 0 ] && [ $TRACK -eq 1 ]; then
+		ui_print "  "
+		ui_print "- High Legibility?"
+		ui_print "  $KEY1 = Yes; $KEY2 = No"
+		ui_print "  "
+		$SEL && { LEGIBLE=true; ui_print "  Selected: Yes"; } || ui_print "  Selected: No"	
 		sleep 0.4
 	fi
 
