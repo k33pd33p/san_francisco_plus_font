@@ -1,4 +1,4 @@
-# Volume-Key-Seletor by Zackptg5 @ xda
+# Volume-Key-Selector by Zackptg5 @ xda
 # modified by nongthaihoang @ xda
 
 chmod 755 $MODPATH/tools/keycheck
