@@ -1,7 +1,8 @@
-# External Tools
+# Volume-Key-Seletor by Zackptg5 @ xda
+# modified by nongthaihoang @ xda
 
-chmod 755 $FONTDIR/keycheck
-alias keycheck="$FONTDIR/keycheck"
+chmod 755 $MODPATH/tools/keycheck
+alias keycheck="$MODPATH/tools/keycheck"
 
 chooseportold() {
   # Keycheck binary by someone755 @Github, idea for code below by Zappo @xda-developers

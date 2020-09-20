@@ -1,8 +1,8 @@
 # San Francisco Plus Font
 **San Francisco font for Android**
 
-[![version](https://img.shields.io/badge/Version-4.2-brightgreen.svg)](https://github.com/nongthaihoang/san_francisco_plus_font/releases/tag/v4.2) 
-![updated](https://img.shields.io/badge/Updated-Sep_13,_2020-green.svg) 
+[![version](https://img.shields.io/badge/Version-4.3-brightgreen.svg)](https://github.com/nongthaihoang/san_francisco_plus_font/releases/tag/v4.3) 
+![updated](https://img.shields.io/badge/Updated-Sep_20,_2020-green.svg) 
 [![forum](https://img.shields.io/badge/Forum-XDA-orange.svg)](https://forum.xda-developers.com/apps/magisk/font-headline-fonts-nongthaihoang-t3886349) 
 [![download](https://img.shields.io/badge/Download-↓-yellow.svg)](https://github.com/nongthaihoang/san_francisco_plus_font/releases)
 [![donate](https://img.shields.io/badge/Donate-Paypal-blue.svg)](https://paypal.me/nongthaihoang)
@@ -19,4 +19,6 @@ San Francisco font with additional features and improvements.
 ![img](https://raw.githubusercontent.com/nongthaihoang/gs_images/master/sfp/6.jpg)
 
 ## Thanks
-- [MMT-Extended-Addons](https://github.com/Zackptg5/MMT-Extended-Addons)
+- [Magisk](https://github.com/topjohnwu/Magisk)
+- [Volume-Key-Selector](https://github.com/Zackptg5/MMT-Extended-Addons/tree/master/Volume-Key-Selector)
+- [TotallyAnxious @ xda](https://forum.xda-developers.com/member.php?u=5377398) for donation

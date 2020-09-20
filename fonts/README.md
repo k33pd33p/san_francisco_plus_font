@@ -11,3 +11,6 @@ l Move-TopRight-v60
 
 # text
 ss03
+
+# tracking
+SBR +/- 10

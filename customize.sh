@@ -1,3 +1,6 @@
+# Custom Font Installer 
+# by nongthaihoang @ xda
+
 [ ! $MAGISKTMP ] && MAGISKTMP=$(magisk --path)/.magisk
 [ -d $MAGISKTMP ] && ORIGDIR=$MAGISKTMP/mirror
 FONTDIR=$MODPATH/fonts
@@ -14,7 +17,7 @@ patch() {
 	else
 		find /data/adb/modules* -type f -name fonts.xml -exec rm {} \;
 		cp /system/etc/fonts.xml $SYSXML
-		version !
+		ver !
 	fi
 	sed -i '/"sans-serif">/,/family>/H;1,/family>/{/family>/G}' $SYSXML
 	sed -i ':a;N;$!ba;s/name="sans-serif"//2' $SYSXML
@@ -43,13 +46,13 @@ mono() {
 full() { headline; body; condensed; mono; }
 
 rounded() {
-	[ $HF -eq 2 ] && ( cp $FONTDIR/rd/hf/*ttf $SYSFONT; version hfrnd )
-	[ $BF -eq 2 ] && ( cp $FONTDIR/rd/bf/*ttf $SYSFONT; version bfrnd )
+	[ $HF -eq 2 ] && ( cp $FONTDIR/rd/hf/*ttf $SYSFONT; ver hfrnd )
+	[ $BF -eq 2 ] && ( cp $FONTDIR/rd/bf/*ttf $SYSFONT; ver bfrnd )
 }
 
 text() {
 	cp $FONTDIR/tx/*ttf $SYSFONT
-	version bftxt
+	ver bftxt
 }
 
 bold() {
@@ -68,14 +71,14 @@ bold() {
 		fi
 		cp $scr/bd/$x/*ttf $SYSFONT
 	fi
-	version bld
+	ver bld
 }
 
 legible() {
 	local src=$FONTDIR/bf/hl
 	[ $BF -eq 2 ] && src=$FONTDIR/rd/bf/hl || { [ $BF -eq 3 ] && src=$FONTDIR/tx/hl; } 
 	cp $src/*ttf $SYSFONT
-	version lgbl
+	ver lgbl
 }
 
 tracking() {
@@ -87,11 +90,11 @@ tracking() {
 		src=$FONTDIR/rd/bf/
 	fi
 	cp $src/tr/*ttf $SYSFONT
-	version trk
+	ver trk
 }
 
 clean_up() {
-	rm -rf $FONTDIR $MODPATH/LICENSE
+	rm -rf $FONTDIR $MODPATH/LICENSE $MODPATH/tools
 	rmdir -p $PRDFONT $SYSETC
 }
 
@@ -124,7 +127,7 @@ pixel() {
 				fi
 			fi
 		fi
-		version pxl
+		ver pxl
 	else
 		false
 	fi
@@ -135,7 +138,7 @@ oxygen() {
 		set Black Bold Medium Regular Light Thin
 		for i do cp $SYSFONT/$i.ttf $SYSFONT/SlateForOnePlus-$i.ttf; done
 		cp $SYSFONT/Regular.ttf $SYSFONT/SlateForOnePlus-Book.ttf
-		version oos
+		ver oos
 	else
 		false
 	fi
@@ -158,7 +161,7 @@ miui() {
 		sed -i '/"mipro-light"/,/family>/{/400/s/MiLanProVF/Light/;/700/s/MiLanProVF/Regular/;/stylevalue/d}' $SYSXML
 		sed -i '/"mipro-normal"/,/family>/{/400/s/MiLanProVF/Light/;/700/s/MiLanProVF/Regular/;/stylevalue/d}' $SYSXML
 		sed -i '/"mipro-regular"/,/family>/{/400/s/MiLanProVF/Regular/;/stylevalue="340"/d}' $SYSXML
-		version miui
+		ver miui
 	else
 		false
 	fi
@@ -180,14 +183,14 @@ lg() {
 		fi
 		lg=true
 	fi
-	$lg && version lg || false
+	$lg && ver lg || false
 }
 
 samsung() {
 	if grep -q Samsung $SYSXML; then
 		sed -i 's/SECRobotoLight-//;s/SECCondensed-/Condensed-/' $SYSXML
 		[ $PART -eq 1 ] && sed -i 's/SECRobotoLight-Bold/Medium/' $SYSXML
-		version sam
+		ver sam
 	else
 		false
 	fi
@@ -197,7 +200,7 @@ rom() {
 	pixel || oxygen || miui || lg || samsung
 }
 
-version() { sed -i 3"s/$/-$1&/" $MODPROP; }
+ver() { sed -i 3"s/$/-$1&/" $MODPROP; }
 
 gsp() {
 	GSP=false
@@ -206,7 +209,7 @@ gsp() {
 		SYSXML=$gsp/system/etc/fonts.xml
 		GSP=true
 	fi
-	$GSP && version gsp
+	$GSP && ver gsp
 }
 
 ### SELECTIONS ###
@@ -220,7 +223,7 @@ TRACK=1
 
 gsp
 
-. $FONTDIR/selector.sh
+. $MODPATH/tools/selector.sh
 
 if [ $SEL ]; then
 	OPTION=true	
@@ -331,7 +334,7 @@ fi #OPTIONS
 ui_print "  "
 ui_print "- Installing"
 mkdir -p $SYSFONT $SYSETC $PRDFONT
-[ $PART -eq 1 ] && ( patch; full ) || ( body; condensed; mono; version bf )
+[ $PART -eq 1 ] && ( patch; full ) || ( body; condensed; mono; ver bf )
 [ $HF -eq 2 ] || [ $BF -eq 2 ] && rounded
 [ $BF -eq 3 ] && text
 [ $BOLD -ne 0 ] && bold
