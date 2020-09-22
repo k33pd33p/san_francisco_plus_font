@@ -21,4 +21,4 @@ San Francisco font with additional features and improvements.
 ## Thanks
 - [Magisk](https://github.com/topjohnwu/Magisk)
 - [Volume-Key-Selector](https://github.com/Zackptg5/MMT-Extended-Addons/tree/master/Volume-Key-Selector)
-- [TotallyAnxious @ xda](https://forum.xda-developers.com/member.php?u=5377398) for donation
+- [TotallyAnxious](https://forum.xda-developers.com/member.php?u=5377398) for donation
