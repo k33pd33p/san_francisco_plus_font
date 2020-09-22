@@ -197,7 +197,7 @@ samsung() {
 }
 
 rom() {
-	pixel || oxygen || miui || lg || samsung
+	pixel || oxygen || miui || samsung || lg
 }
 
 ver() { sed -i 3"s/$/-$1&/" $MODPROP; }

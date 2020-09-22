@@ -40,8 +40,8 @@ else
 	mkdir -p $TMPDIR
 	unzip $ZIPFILE -d $TMPDIR
 	. $TMPDIR/tools/twrp.sh
-  	install_module
-  	exit 0
+	install_module
+	exit 0
 fi
 
 #################
