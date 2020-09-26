@@ -9,15 +9,20 @@ PRDFONT=$MODPATH/system/product/fonts
 SYSETC=$MODPATH/system/etc
 SYSXML=$SYSETC/fonts.xml
 MODPROP=$MODPATH/module.prop
+mkdir -p $SYSFONT $SYSETC $PRDFONT
 
 patch() {
-	[ -f $ORIGDIR/system/etc/fonts.xml ] && cp $ORIGDIR/system/etc/fonts.xml $SYSXML || abort "! $ORIGDIR/system/etc/fonts.xml: file not found"
-	DEFFONT=$(sed -n '/"sans-serif">/,/family>/p' $SYSXML | grep '\-Regular.' | sed 's/.*">//;s/-.*//')
-	if ! grep -q 'family >' /system/etc/fonts.xml; then
-		find /data/adb/modules* -type f -name fonts.xml -exec rm {} \;
-		cp /system/etc/fonts.xml $SYSXML
-		ver !
+	if [ -f $ORIGDIR/system/etc/fonts.xml ]; then
+		if ! grep -q 'family >' /system/etc/fonts.xml; then
+			find /data/adb/modules/ -type f -name fonts*xml -exec rm {} \;
+			false | cp -i /system/etc/fonts.xml $SYSXML && ver !
+		else
+			false | cp -i $ORIGDIR/system/etc/fonts.xml $SYSXML 
+		fi
+	else
+		abort "! $ORIGDIR/system/etc/fonts.xml: file not found"
 	fi
+	DEFFONT=$(sed -n '/"sans-serif">/,/family>/p' $SYSXML | grep '\-Regular.' | sed 's/.*">//;s/-.*//')
 	if ! grep -q 'family >' $SYSXML; then
 		sed -i '/"sans-serif">/,/family>/H;1,/family>/{/family>/G}' $SYSXML
 		sed -i ':a;N;$!ba;s/name="sans-serif"//2' $SYSXML
@@ -175,7 +180,7 @@ lg() {
 		lg=true
 	fi
 	if [ -f $ORIGDIR/system/etc/fonts_lge.xml ]; then
-		cp $ORIGDIR/system/etc/fonts_lge.xml $SYSETC
+		false | cp -i $ORIGDIR/system/etc/fonts_lge.xml $SYSETC
 		local lgxml=$SYSETC/fonts_lge.xml
 		sed -i '/"default_roboto">/,/family>/{s/Roboto-T/T/;s/Roboto-L/L/;s/Roboto-R/R/;s/Roboto-I/I/}' $lgxml
 		if [ $PART -eq 1 ]; then
@@ -199,7 +204,11 @@ samsung() {
 
 realme() {
 	if grep -q COLOROS $SYSXML; then
-		[ -f $ORIGDIR/system/etc/fonts_base.xml ] && cp $SYSXML $SYSETC/fonts_base.xml
+		if [ -f $ORIGDIR/system/etc/fonts_base.xml ]; then
+			local ruixml=$SYSETC/fonts_base.xml
+			cp $SYSXML $ruixml
+			sed -i "/\"sans-serif\">/,/family>/{s/$DEFFONT/Roboto/}" $ruixml
+		fi
 		ver rui
 	else
 		false
@@ -213,13 +222,13 @@ rom() {
 ver() { sed -i 3"s/$/-$1&/" $MODPROP; }
 
 gsp() {
-	GSP=false
 	local gsp=/data/adb/modules_update/googlesansplus
 	if grep -q -e 'hf-' -e 'hf$' $gsp/module.prop; then
-		SYSXML=$gsp/system/etc/fonts.xml
-		GSP=true
+		mv $gsp/system/etc $MODPATH/system
+		ver gsp
+	else
+		false
 	fi
-	$GSP && ver gsp
 }
 
 ### SELECTIONS ###
@@ -230,8 +239,6 @@ BF=1
 BOLD=0
 LEGIBLE=false
 TRACK=1
-
-gsp
 
 . $MODPATH/tools/selector.sh
 
@@ -244,7 +251,7 @@ fi
 
 if $OPTION; then
 
-	if ! $GSP; then
+	if ! gsp; then
 		ui_print "  "
 		ui_print "- HEADLINE font?"
 		ui_print "  $KEY1 = Next Option; $KEY2 = OK"
@@ -343,8 +350,8 @@ fi #OPTIONS
 ### INSTALLATION ###
 ui_print "  "
 ui_print "- Installing"
-mkdir -p $SYSFONT $SYSETC $PRDFONT
-[ $PART -eq 1 ] && ( patch; full ) || ( body; condensed; mono; ver bf )
+patch
+[ $PART -eq 1 ] && full || ( body; condensed; mono; ver bf )
 [ $HF -eq 2 ] || [ $BF -eq 2 ] && rounded
 [ $BF -eq 3 ] && text
 [ $BOLD -ne 0 ] && bold
