@@ -23,6 +23,7 @@ patch() {
 		abort "! $ORIGDIR/system/etc/fonts.xml: file not found"
 	fi
 	DEFFONT=$(sed -n '/"sans-serif">/,/family>/p' $SYSXML | grep '\-Regular.' | sed 's/.*">//;s/-.*//')
+	[ $DEFFONT ] || abort "! Unknown default font"
 	if ! grep -q 'family >' $SYSXML; then
 		sed -i '/"sans-serif">/,/family>/H;1,/family>/{/family>/G}' $SYSXML
 		sed -i ':a;N;$!ba;s/name="sans-serif"//2' $SYSXML
@@ -116,8 +117,10 @@ pixel() {
 			set BoldItalic Bold MediumItalic Medium
 			for i do cp $SYSFONT/$i.ttf $dest/GoogleSans-$i.ttf; done
 			src=$FONTDIR/bf
+			[ $TRACK -eq 1 ] && src=$src/tr
 			cp $src/Italic.ttf $dest/GoogleSans-Italic.ttf
 			[ $HF -eq 2 ] && src=$FONTDIR/rd/bf
+			[ $TRACK -eq 1 ] && src=$src/tr
 			cp $src/Regular.ttf $dest/GoogleSans-Regular.ttf
 			if [ $BOLD -ne 0 ]; then
 				if [ $BOLD -eq 3 ]; then
@@ -131,6 +134,7 @@ pixel() {
 					[ $HF -eq 2 ] && src=$FONTDIR/rd/bf/bd
 					cp $src/$x/Regular.ttf $dest/GoogleSans-Regular.ttf
 				fi
+			fi
 			fi
 		fi
 		ver pxl
@@ -207,7 +211,7 @@ realme() {
 		if [ -f $ORIGDIR/system/etc/fonts_base.xml ]; then
 			local ruixml=$SYSETC/fonts_base.xml
 			cp $SYSXML $ruixml
-			sed -i "/\"sans-serif\">/,/family>/{s/$DEFFONT/Roboto/}" $ruixml
+			sed -i "/\"sans-serif\">/,/family>/s/$DEFFONT/Roboto/" $ruixml
 		fi
 		ver rui
 	else
