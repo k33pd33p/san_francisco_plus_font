@@ -117,11 +117,10 @@ pixel() {
 			set BoldItalic Bold MediumItalic Medium
 			for i do cp $SYSFONT/$i.ttf $dest/GoogleSans-$i.ttf; done
 			src=$FONTDIR/bf
-			[ $TRACK -eq 1 ] && src=$src/tr
-			cp $src/Italic.ttf $dest/GoogleSans-Italic.ttf
+			[ $TRACK -eq 2 ] || [ $BF -eq 3 ] && local tr=/tr
+			cp $src$tr/Italic.ttf $dest/GoogleSans-Italic.ttf
 			[ $HF -eq 2 ] && src=$FONTDIR/rd/bf
-			[ $TRACK -eq 1 ] && src=$src/tr
-			cp $src/Regular.ttf $dest/GoogleSans-Regular.ttf
+			cp $src$tr/Regular.ttf $dest/GoogleSans-Regular.ttf
 			if [ $BOLD -ne 0 ]; then
 				if [ $BOLD -eq 3 ]; then
 					cp $dest/GoogleSans-Medium.ttf $dest/GoogleSans-Regular.ttf
