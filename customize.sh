@@ -135,7 +135,6 @@ pixel() {
 					cp $src/$x/Regular.ttf $dest/GoogleSans-Regular.ttf
 				fi
 			fi
-			fi
 		fi
 		ver pxl
 	else
